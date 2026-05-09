@@ -66,6 +66,19 @@ public class App
 
     }
 
+    public static void retr(InputStream in, String fileName) throws Exception{
+        FileOutputStream fos = new FileOutputStream(fileName);
+
+        byte[] file = new byte[1500];
+
+        int bytesRead;
+
+        while((bytesRead = in.read(file)) != -1){
+            fos.write(file, 0, bytesRead);
+        }
+        fos.close();
+    }
+
     public static void main( String[] args )
     {
         try{
@@ -110,6 +123,24 @@ public class App
                     System.out.println(receiveCommand(in));
                     ls(listIn);
                     listIn.close();
+                    list.close();
+                    System.out.println(receiveCommand(in));
+                }if (command.equals("get")){
+                    sendCommand("PASV\r\n", out);
+                    String pasv = receiveCommand(in);
+                    System.out.println(pasv);
+                    addsv = getIp(pasv);
+                    port = getPort(pasv);
+
+                    Socket socket = new Socket(addsv, port);
+                    InputStream fileIn = socket.getInputStream();
+                    System.out.println("Enter a file name: ");
+                    String fileName = keyboard.nextLine();
+                    sendCommand("RETR " + fileName + "\r\n", out);
+                    System.out.println(receiveCommand(in));
+
+                    retr(fileIn, fileName);
+                    socket.close();
                     System.out.println(receiveCommand(in));
                 }
                 if (command.equals("quit")){
