@@ -233,6 +233,7 @@ public class App
                     break;
                 }
             }
+            keyboard.close();
             client.close();
         }catch(Exception e){
             e.printStackTrace();
