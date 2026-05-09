@@ -101,7 +101,7 @@ public class App
     public static void main( String[] args )
     {
         try{
-            Socket client = new Socket("test.rebex.net", 21);
+            Socket client = new Socket("127.0.0.1", 21);
 
             Scanner keyboard = new Scanner(System.in);
 
@@ -110,11 +110,28 @@ public class App
 
             System.out.println(receiveCommand(in));
 
-            sendCommand("USER demo\r\n", out);
+            sendCommand("USER anonymous\r\n", out);
             System.out.println(receiveCommand(in));
 
-            sendCommand("PASS password\r\n", out);
-            System.out.println(receiveCommand(in));
+            sendCommand("PASS anonymous\r\n", out);
+
+            String messResponse = receiveCommand(in);
+            System.out.println(messResponse);
+
+            if (!messResponse.startsWith("331") && !messResponse.startsWith("230")){
+                System.out.println("Anonymous login failed");
+                System.out.println("Enter a username: ");
+                String user = keyboard.nextLine();
+
+                sendCommand("USER " + user + "\r\n", out);
+                System.out.println(receiveCommand(in));
+
+                System.out.println("Enter a password:");
+                String pass = keyboard.nextLine();
+                sendCommand("PASS " + pass + "\r\n", out);
+                System.out.println(receiveCommand(in));
+            }
+
 
             String addsv = null;
             int port = 0;
@@ -196,7 +213,7 @@ public class App
                     System.out.println(response);
                     
                     if (response.startsWith("150") || response.startsWith("125")){
-                        retr(dataSocket, fileName);
+                        stor(dataSocket, fileName);
                         dataSocket.close();
                         System.out.println(receiveCommand(in));
                     }else{

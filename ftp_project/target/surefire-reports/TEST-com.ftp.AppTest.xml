@@ -12,7 +12,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="VN"/>
     <property name="sun.boot.library.path" value="/opt/homebrew/Cellar/openjdk/25.0.1/libexec/openjdk.jdk/Contents/Home/lib"/>
-    <property name="sun.java.command" value="/Users/quanninh/Documents/Third_year/Sem_2/ComNet2/Project/FTP-Protocol/ftp_project/target/surefire/surefirebooter13373387390218407858.jar /Users/quanninh/Documents/Third_year/Sem_2/ComNet2/Project/FTP-Protocol/ftp_project/target/surefire 2026-05-09T10-35-04_808-jvmRun1 surefire2226306881543118687tmp surefire_010359339655183006316tmp"/>
+    <property name="sun.java.command" value="/Users/quanninh/Documents/Third_year/Sem_2/ComNet2/Project/FTP-Protocol/ftp_project/target/surefire/surefirebooter16883174372364343465.jar /Users/quanninh/Documents/Third_year/Sem_2/ComNet2/Project/FTP-Protocol/ftp_project/target/surefire 2026-05-09T12-12-29_112-jvmRun1 surefire2049939584624782262tmp surefire_011440987603173134264tmp"/>
     <property name="http.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="/Users/quanninh/Documents/Third_year/Sem_2/ComNet2/Project/FTP-Protocol/ftp_project/target/test-classes:/Users/quanninh/Documents/Third_year/Sem_2/ComNet2/Project/FTP-Protocol/ftp_project/target/classes:/Users/quanninh/.m2/repository/junit/junit/4.11/junit-4.11.jar:/Users/quanninh/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:"/>
@@ -29,7 +29,7 @@
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="apple.awt.application.name" value="ForkedBooter"/>
-    <property name="surefire.real.class.path" value="/Users/quanninh/Documents/Third_year/Sem_2/ComNet2/Project/FTP-Protocol/ftp_project/target/surefire/surefirebooter13373387390218407858.jar"/>
+    <property name="surefire.real.class.path" value="/Users/quanninh/Documents/Third_year/Sem_2/ComNet2/Project/FTP-Protocol/ftp_project/target/surefire/surefirebooter16883174372364343465.jar"/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="ftp.nonProxyHosts" value="local|*.local|169.254/16|*.169.254/16"/>
     <property name="java.runtime.version" value="25.0.1"/>

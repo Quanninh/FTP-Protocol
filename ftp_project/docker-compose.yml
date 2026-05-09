@@ -1,0 +1,12 @@
+services:
+  ftp-server:
+    image: delfer/alpine-ftp-server
+    ports:
+      - "21:21"
+      - "30000-30009:30000-30009"
+    environment:
+      USERS: "user|12345"
+      MIN_PORT: 30000
+      MAX_PORT: 30009
+      ADDRESS: "127.0.0.1"
+    
