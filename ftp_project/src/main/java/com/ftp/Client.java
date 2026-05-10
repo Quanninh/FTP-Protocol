@@ -4,10 +4,25 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
+interface Logger {
+    void log(String message);
+}
+
 public class Client {
+    private Logger logger;
     private Socket client;
     private BufferedReader in;
     private BufferedWriter out;
+
+    public void setLogger(Logger logger){
+        this.logger = logger;
+    }
+
+    public void log(String message){
+        if (logger != null){
+            logger.log(message);
+        }
+    }
 
     public void connect(String ip, int port)throws Exception {
         client = new Socket(ip, port);
@@ -15,7 +30,7 @@ public class Client {
         in = new BufferedReader(new InputStreamReader(client.getInputStream()));
         out = new BufferedWriter(new OutputStreamWriter(client.getOutputStream())); 
 
-        System.out.println(receiveCommand(in));
+        log(receiveCommand(in));
     }
 
     public void sendCommand(String command, BufferedWriter out) throws Exception{
@@ -71,10 +86,11 @@ public class Client {
 
     public boolean login(String user, String pass) throws Exception{
         sendCommand("USER " + user + "\r\n", out);
-        receiveCommand(in);
+        log(receiveCommand(in));
 
         sendCommand("PASS " + pass + "\r\n", out);
         String response = receiveCommand(in);
+        log(response);
 
         if (!response.startsWith("230")){
             return false;
@@ -82,20 +98,21 @@ public class Client {
         return true;
     }
 
-    public void pwd() throws Exception{
+    public String pwd() throws Exception{
         sendCommand("PWD\r\n", out);
-        System.out.println(receiveCommand(in));
+        return receiveCommand(in);
     }
 
     public void cd(String path) throws Exception{
         sendCommand("CWD " + path + "\r\n", out);
-        System.out.println(receiveCommand(in));
+        log(receiveCommand(in));
     }
 
     public List<String> ls() throws Exception{
         List<String> files = new ArrayList<>();
         sendCommand("PASV\r\n", out);
         String pasv = receiveCommand(in);
+        log(pasv);
 
         String addsv = getIp(pasv);
         int port = getPort(pasv);
@@ -103,7 +120,7 @@ public class Client {
         Socket list = new Socket(addsv, port);
         BufferedReader listIn = new BufferedReader(new InputStreamReader(list.getInputStream()));
         sendCommand("LIST\r\n", out);
-        receiveCommand(in);
+        log(receiveCommand(in));
 
         String line = null;
 
@@ -114,17 +131,17 @@ public class Client {
 
         listIn.close();
         list.close();
-        receiveCommand(in);
+        log(receiveCommand(in));
         return files;
     }
 
     public void retrieve(String fileName) throws Exception{
         sendCommand("TYPE I\r\n", out);
-        System.out.println(receiveCommand(in));
+        log(receiveCommand(in));
 
         sendCommand("PASV\r\n", out);
         String pasv = receiveCommand(in);
-        System.out.println(pasv);
+        log(pasv);
         String addsv = getIp(pasv);
         int port = getPort(pasv);
 
@@ -132,7 +149,7 @@ public class Client {
         
         sendCommand("RETR " + fileName + "\r\n", out);
         String response = receiveCommand(in);
-        System.out.println(response);
+        log(response);
 
         if (response.startsWith("150") || response.startsWith("125")){
             FileOutputStream fos = new FileOutputStream(fileName);
@@ -149,7 +166,7 @@ public class Client {
             fos.close();
 
             dataSocket.close();
-            System.out.println(receiveCommand(in));
+            log(receiveCommand(in));
         }else{
             dataSocket.close();
         }
@@ -157,11 +174,11 @@ public class Client {
 
     public void store(String fileName) throws Exception{
         sendCommand("TYPE I\r\n", out);
-        System.out.println(receiveCommand(in));
+        log(receiveCommand(in));
 
         sendCommand("PASV\r\n", out);
         String pasv = receiveCommand(in);
-        System.out.println(pasv);
+        log(pasv);
         String addsv = getIp(pasv);
         int port = getPort(pasv);
 
@@ -169,7 +186,7 @@ public class Client {
         
         sendCommand("STOR " + fileName + "\r\n", out);
         String response = receiveCommand(in);
-        System.out.println(response);
+        log(response);
         
         if (response.startsWith("150") || response.startsWith("125")){
             File file = new File(fileName);
@@ -187,7 +204,7 @@ public class Client {
             outstr.flush();
             fin.close();
             dataSocket.close();
-            System.out.println(receiveCommand(in));
+            log(receiveCommand(in));
         }else{
             dataSocket.close();
         }
@@ -195,22 +212,22 @@ public class Client {
 
     public void delete(String fileName) throws Exception{
         sendCommand("DELE " + fileName + "\r\n", out);
-        System.out.println(receiveCommand(in));
+        log(receiveCommand(in));
     }
 
     public void mkdir(String dir) throws Exception{
         sendCommand("MKD " + dir + "\r\n", out);
-        System.out.println(receiveCommand(in));
+        log(receiveCommand(in));
     }
 
     public void rmdir(String dir) throws Exception{
         sendCommand("RMD " + dir + "\r\n", out);
-        System.out.println(receiveCommand(in));
+        log(receiveCommand(in));
     }
 
     public void quit() throws Exception{
         sendCommand("QUIT\r\n", out);
-        System.out.println(receiveCommand(in));
+        log(receiveCommand(in));
         client.close();
     }
 }
