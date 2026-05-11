@@ -166,6 +166,7 @@ mvn javafx:run
 # Screenshots
 ---
 <img width="1438" height="842" alt="Screenshot 2026-05-11 at 11 11 54" src="https://github.com/user-attachments/assets/6669637c-64c9-4557-b833-eef9a37cd6a9" />
+
 ---
 
 # Author
