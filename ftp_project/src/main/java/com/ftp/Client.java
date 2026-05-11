@@ -18,13 +18,13 @@ public class Client {
         this.logger = logger;
     }
 
-    public void log(String message){
+    private void log(String message){
         if (logger != null){
             logger.log(message);
         }
     }
 
-    public void connect(String ip, int port)throws Exception {
+    public void connect(String ip, int port) throws Exception {
         client = new Socket(ip, port);
 
         in = new BufferedReader(new InputStreamReader(client.getInputStream()));
@@ -33,7 +33,7 @@ public class Client {
         log(receiveCommand(in));
     }
 
-    public void sendCommand(String command, BufferedWriter out) throws Exception{
+    public void sendCommand(String command) throws Exception{
         out.write(command);
         out.flush();
     }
@@ -45,7 +45,7 @@ public class Client {
             return "No response!!!";
         }
 
-        String full = "";
+        String full = message + System.lineSeparator();
         if (message.length() > 3 && message.charAt(3) == '-'){
             String code = message.substring(0, 3);
             while((message = in.readLine()) != null){
@@ -85,10 +85,10 @@ public class Client {
     }
 
     public boolean login(String user, String pass) throws Exception{
-        sendCommand("USER " + user + "\r\n", out);
+        sendCommand("USER " + user + "\r\n");
         log(receiveCommand(in));
 
-        sendCommand("PASS " + pass + "\r\n", out);
+        sendCommand("PASS " + pass + "\r\n");
         String response = receiveCommand(in);
         log(response);
 
@@ -99,18 +99,20 @@ public class Client {
     }
 
     public String pwd() throws Exception{
-        sendCommand("PWD\r\n", out);
-        return receiveCommand(in);
+        sendCommand("PWD\r\n");
+        String response = receiveCommand(in);
+        log(response);
+        return response;
     }
 
     public void cd(String path) throws Exception{
-        sendCommand("CWD " + path + "\r\n", out);
+        sendCommand("CWD " + path + "\r\n");
         log(receiveCommand(in));
     }
 
     public List<String> ls() throws Exception{
         List<String> files = new ArrayList<>();
-        sendCommand("PASV\r\n", out);
+        sendCommand("PASV\r\n");
         String pasv = receiveCommand(in);
         log(pasv);
 
@@ -119,14 +121,14 @@ public class Client {
 
         Socket list = new Socket(addsv, port);
         BufferedReader listIn = new BufferedReader(new InputStreamReader(list.getInputStream()));
-        sendCommand("LIST\r\n", out);
+        sendCommand("LIST\r\n");
         log(receiveCommand(in));
 
         String line = null;
 
         while((line = listIn.readLine()) != null){
-            String[] fileParts = line.trim().split("\\s+", 9);
-            files.add(fileParts[8]);
+            // String[] fileParts = line.trim().split("\\s+", 9);
+            files.add(line);
         }
 
         listIn.close();
@@ -136,10 +138,10 @@ public class Client {
     }
 
     public void retrieve(String fileName) throws Exception{
-        sendCommand("TYPE I\r\n", out);
+        sendCommand("TYPE I\r\n");
         log(receiveCommand(in));
 
-        sendCommand("PASV\r\n", out);
+        sendCommand("PASV\r\n");
         String pasv = receiveCommand(in);
         log(pasv);
         String addsv = getIp(pasv);
@@ -147,7 +149,7 @@ public class Client {
 
         Socket dataSocket = new Socket(addsv, port);
         
-        sendCommand("RETR " + fileName + "\r\n", out);
+        sendCommand("RETR " + fileName + "\r\n");
         String response = receiveCommand(in);
         log(response);
 
@@ -173,10 +175,10 @@ public class Client {
     }
 
     public void store(String fileName) throws Exception{
-        sendCommand("TYPE I\r\n", out);
+        sendCommand("TYPE I\r\n");
         log(receiveCommand(in));
 
-        sendCommand("PASV\r\n", out);
+        sendCommand("PASV\r\n");
         String pasv = receiveCommand(in);
         log(pasv);
         String addsv = getIp(pasv);
@@ -184,7 +186,7 @@ public class Client {
 
         Socket dataSocket = new Socket(addsv, port);
         
-        sendCommand("STOR " + fileName + "\r\n", out);
+        sendCommand("STOR " + fileName + "\r\n");
         String response = receiveCommand(in);
         log(response);
         
@@ -211,23 +213,25 @@ public class Client {
     }
 
     public void delete(String fileName) throws Exception{
-        sendCommand("DELE " + fileName + "\r\n", out);
+        sendCommand("DELE " + fileName + "\r\n");
         log(receiveCommand(in));
     }
 
     public void mkdir(String dir) throws Exception{
-        sendCommand("MKD " + dir + "\r\n", out);
+        sendCommand("MKD " + dir + "\r\n");
         log(receiveCommand(in));
     }
 
     public void rmdir(String dir) throws Exception{
-        sendCommand("RMD " + dir + "\r\n", out);
+        sendCommand("RMD " + dir + "\r\n");
         log(receiveCommand(in));
     }
 
     public void quit() throws Exception{
-        sendCommand("QUIT\r\n", out);
+        sendCommand("QUIT\r\n");
         log(receiveCommand(in));
+        in.close();
+        out.close();
         client.close();
     }
 }

@@ -27,21 +27,20 @@ public class UI extends Application{
     private Label currentDir = new Label("Current Directory: /");
     private Stage mainStage;
     
-    public void setFont(Label label, int size){
-        label.setFont(new Font(size));
-    }
-    
     @Override
     public void start(Stage stage) {
         ftpClient.setLogger(new Logger(){
             @Override
             public void log(String message){
-                bottomArea.appendText(message + System.lineSeparator());
+                javafx.application.Platform.runLater(() -> {
+                    bottomArea.appendText(message + System.lineSeparator());
+                });
             }
         });
 
         this.mainStage = stage;
         BorderPane pane = new BorderPane();
+        pane.setPadding(new Insets(10));
 
         // Top panel
         VBox topStage = createTopPanel();
@@ -52,6 +51,12 @@ public class UI extends Application{
         pane.setCenter(centralStage);
 
         // Bottom panel
+        bottomArea.setEditable(false);
+        bottomArea.setPrefHeight(150);
+        bottomArea.setStyle("-fx-font-family: 'Monospaced';" +
+        "-fx-font-size: 13px;" +
+        "-fx-control-inner-background: white;" +
+        "-fx-text-fill: black;");
         pane.setBottom(bottomArea);
 
         Scene scene = new Scene(pane, 500, 300);
@@ -65,19 +70,38 @@ public class UI extends Application{
         userInfo.setPadding(new Insets(10));
 
         Label hostLabel = new Label("Server Host:");
-        setFont(hostLabel, 18);
+        hostLabel.setStyle("-fx-font-family: 'Segoe UI';" +
+        "-fx-font-size: 13px;");
 
         Label portLabel = new Label("Port Number:");
-        setFont(portLabel, 18);
+        portLabel.setStyle("-fx-font-family: 'Segoe UI';" +
+        "-fx-font-size: 13px;");
 
         Label userLabel = new Label("User Name:");
-        setFont(userLabel, 18);
+        userLabel.setStyle("-fx-font-family: 'Segoe UI';" +
+        "-fx-font-size: 13px;");
 
         Label passLabel = new Label("Password:");
-        setFont(passLabel, 18);
+        passLabel.setStyle("-fx-font-family: 'Segoe UI';" +
+        "-fx-font-size: 13px;");
 
-        //setFont(currentDir, 18);
-        Button connBtn = new Button("connect");
+        currentDir.setStyle("-fx-font-family: 'Monospaced';" +
+        "-fx-font-size: 13px;");
+
+
+        hostField.setStyle("-fx-font-family: 'Segoe UI';" +
+        "-fx-font-size: 13px;");
+
+        portField.setStyle("-fx-font-family: 'Segoe UI';" +
+        "-fx-font-size: 13px;");
+
+        userField.setStyle("-fx-font-family: 'Segoe UI';" +
+        "-fx-font-size: 13px;");
+
+        passField.setStyle("-fx-font-family: 'Segoe UI';" +
+        "-fx-font-size: 13px;");
+
+        Button connBtn = new Button("Connect");
         connBtn.setMaxWidth(Double.MAX_VALUE);
         connBtn.setOnAction(e -> connect());
 
@@ -92,19 +116,23 @@ public class UI extends Application{
 
     public HBox createCentralPanel(){
         fileList.setPrefWidth(600);
+        fileList.setStyle("-fx-font-family: 'Monospaced';" +
+        "-fx-font-size: 13px;" +
+        "-fx-control-inner-background: white;" +
+        "-fx-text-fill: black;");
 
         VBox buttons = new VBox(10);
         buttons.setPadding(new Insets(10));
 
-        Button lsBtn = new Button("List");
-        Button getBtn = new Button("Get");
-        Button putBtn = new Button("Put");
+        Button lsBtn = new Button("Refresh");
+        Button getBtn = new Button("Download");
+        Button putBtn = new Button("Upload");
         Button deleteBtn = new Button("Delete");
-        Button mkdirBtn = new Button("Make Directory");
+        Button mkdirBtn = new Button("Create Directory");
         Button rmdirBtn = new Button("Remove Directory");
         Button cdBtn = new Button("cd");
         Button pwdBtn = new Button("pwd");
-        Button qBtn = new Button("quit");
+        Button qBtn = new Button("Disconnect");
 
         lsBtn.setMaxWidth(Double.MAX_VALUE);
         getBtn.setMaxWidth(Double.MAX_VALUE);
@@ -128,9 +156,21 @@ public class UI extends Application{
 
         buttons.getChildren().addAll(lsBtn, getBtn, putBtn, deleteBtn, mkdirBtn, rmdirBtn, cdBtn, pwdBtn, qBtn);
 
+        centralArea.setEditable(false);
+        centralArea.setPrefHeight(150);
         HBox centralPanel = new HBox(10);
         centralPanel.setPadding(new Insets(10));
+        centralArea.setStyle("-fx-font-family: 'Monospaced';" +
+        "-fx-font-size: 13px;" +
+        "-fx-control-inner-background: white;" +
+        "-fx-text-fill: black;");
+        centralArea.setMaxWidth(Double.MAX_VALUE);
+
         centralPanel.getChildren().addAll(fileList, buttons, centralArea);
+
+        HBox.setHgrow(fileList, Priority.ALWAYS);
+        HBox.setHgrow(buttons, Priority.ALWAYS);
+        HBox.setHgrow(centralArea, Priority.ALWAYS);
 
         return centralPanel;
     }
@@ -149,6 +189,8 @@ public class UI extends Application{
             String m = ftpClient.pwd();
             String[] messParts = m.trim().split("\\s+");
             currentDir.setText("Current Directory: "+ messParts[1].replace("\"", ""));
+            currentDir.setStyle("-fx-font-family: 'Monospaced';" +
+            "-fx-font-size: 13px;");
         }catch(Exception e){
             logCenter(e.getMessage());
         }
@@ -376,15 +418,22 @@ public class UI extends Application{
     }
 
     private void getFiles(){
-        try{
-            fileList.setItems(FXCollections.observableArrayList(ftpClient.ls()));
-        }catch(Exception e){
-            logCenter(e.getMessage());
-        }
+        new Thread(() -> {
+            try{
+                var list = ftpClient.ls();
+                javafx.application.Platform.runLater(() -> {
+                    fileList.setItems(FXCollections.observableArrayList(list));
+                });
+            }catch(Exception e){
+                logCenter(e.getMessage());
+            }
+        }).start();
     }
 
     private void logCenter(String message){
-        centralArea.appendText(message + System.lineSeparator());
+        javafx.application.Platform.runLater(() -> {
+            centralArea.appendText(message + System.lineSeparator());
+        });
     }
 
     public static void main(String[] args){
