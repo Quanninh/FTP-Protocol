@@ -148,6 +148,12 @@ mvn javafx:run
 
 ---
 
+# Class Diagram
+---
+<img width="807" height="720" alt="Screenshot 2026-05-11 at 15 25 50" src="https://github.com/user-attachments/assets/58dba6c0-cb61-4bc1-9a6d-9f5dde289254" />
+
+---
+
 # Author
 
 Developed by Quan Ninh.
