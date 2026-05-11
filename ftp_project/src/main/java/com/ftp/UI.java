@@ -7,7 +7,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
-import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -158,13 +157,14 @@ public class UI extends Application{
 
         centralArea.setEditable(false);
         centralArea.setPrefHeight(150);
-        HBox centralPanel = new HBox(10);
-        centralPanel.setPadding(new Insets(10));
         centralArea.setStyle("-fx-font-family: 'Monospaced';" +
         "-fx-font-size: 13px;" +
         "-fx-control-inner-background: white;" +
         "-fx-text-fill: black;");
         centralArea.setMaxWidth(Double.MAX_VALUE);
+
+        HBox centralPanel = new HBox(10);
+        centralPanel.setPadding(new Insets(10));
 
         centralPanel.getChildren().addAll(fileList, buttons, centralArea);
 
@@ -223,7 +223,7 @@ public class UI extends Application{
         new Thread(() -> {
             try{
                 ftpClient.cd(path);
-                logCenter("cd: " + path);
+                logCenter("cd " + path);
             }catch(Exception e){
                 logCenter(e.getMessage());
             }
