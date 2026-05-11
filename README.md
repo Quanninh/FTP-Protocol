@@ -96,7 +96,7 @@ The application contains:
 ## 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/FTP-Client.git
+git clone https://github.com/Quanninh/FTP-Protocol.git
 cd ftp_project
 ```
 
@@ -116,7 +116,7 @@ mvn compile
 mvn javafx:run
 ```
 
-# Example Workflow
+# Workflow
 
 1. Enter FTP server information
 2. Click **Connect**
@@ -127,6 +127,8 @@ mvn javafx:run
    - **Delete**
    - **Create Directory**
    - **Remove Directory**
+   - **cd**
+   - **pwd**
 5. Click **Disconnect** when finished
 
 ---
@@ -137,29 +139,6 @@ mvn javafx:run
 - Binary mode (`TYPE I`) is used for uploads and downloads.
 - File transfer operations run in separate threads to prevent UI freezing.
 - FTP responses are displayed in the bottom log panel.
-
----
-
-# Known Limitations
-
-- No SSL/TLS support (FTP only)
-- No drag-and-drop upload
-- No progress bar for transfers
-- No file chooser integration yet
-- No recursive directory operations
-
----
-
-# Future Improvements
-
-- FTPS support
-- SFTP support
-- Progress bars
-- Drag and drop uploads
-- Double-click directory navigation
-- File chooser for uploads/downloads
-- Better file list formatting
-- Connection timeout handling
 
 ---
 
